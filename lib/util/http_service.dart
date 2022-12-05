@@ -6,6 +6,8 @@ class HttpService{
 
   static const String register = base_url + "register";
 
+  static const String login = "${base_url}login";
+
   void showMessage(String message, BuildContext context){
     var snackBar = SnackBar(
       content: Text(message),

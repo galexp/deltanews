@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:deltanews/preference/user_preference.dart';
+import 'package:deltanews/provider/user_provider.dart';
 import 'package:deltanews/util/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -12,17 +13,47 @@ import '../model/user.dart';
 enum Status {
   Registered,
   NotRegistered,
-  Registering
+  Registering,
+  notLoggedIn,
+  loggedIn
 }
 
 class AuthProvider with ChangeNotifier{
 
-   Status _registerdInStatus = Status.NotRegistered;
+  Status _registerdInStatus = Status.NotRegistered;
+
+  Status _loginStatus = Status.notLoggedIn;
 
   Status get registeredInStatus => _registerdInStatus;
 
-  set registeredInStatus(Status value){
-    registeredInStatus = value;
+  Status get loginStatus => _loginStatus;
+
+  Future<Map<String, dynamic>> login(String email, 
+      String password) async{
+
+      final Map<String, dynamic> loginData = {
+
+        "email" : email,
+        "password" : password
+
+      };
+        print(loginData);
+      _loginStatus = Status.loggedIn;
+      notifyListeners();
+
+      var response = await post(
+        Uri.parse(HttpService.login),
+        headers: {'content-Type': 'application/json'},
+        body: json.encode(loginData)
+      ).then(onValue)
+      .catchError(onError);
+
+      _loginStatus = Status.notLoggedIn;
+      notifyListeners();
+
+
+
+    return response;
   }
 
 
@@ -58,10 +89,10 @@ class AuthProvider with ChangeNotifier{
     var result;
 
     final Map<String, dynamic> responseData = json.decode(response.body);
-    // print(responseData);
+    print(responseData);
     if(response.statusCode == 200){
 
-
+      // print(response);
 
       if(responseData.containsKey('validation_errors')){
 
@@ -78,6 +109,8 @@ class AuthProvider with ChangeNotifier{
       var userdata = responseData;
       
       User user = User.fromJson(userdata);
+
+      
 
       UserPreference().saveUser(user);
 

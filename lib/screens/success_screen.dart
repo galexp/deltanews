@@ -1,3 +1,5 @@
+import 'package:deltanews/model/user.dart';
+import 'package:deltanews/provider/user_provider.dart';
 import 'package:deltanews/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -48,10 +50,11 @@ class SuccessScreen extends StatelessWidget {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
+                  User user =  User(name: UserProvider().user, token: "");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SearchScreen()));
+                          builder: (context) => SearchScreen(user: user)));
                 },
                 child: const Text(
                   "Go to Homepage",

@@ -1,7 +1,13 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:deltanews/model/user.dart';
+import 'package:deltanews/provider/auth_provider.dart';
+import 'package:deltanews/provider/user_provider.dart';
+import 'package:deltanews/screens/search_screen.dart';
 import 'package:deltanews/screens/signup_screen.dart';
+import 'package:deltanews/util/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -21,6 +27,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authProvider = Provider.of<AuthProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -176,15 +186,37 @@ class _SignInScreenState extends State<SignInScreen> {
                     )),
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  child: ElevatedButton(
+                  child: authProvider.loginStatus == Status.loggedIn
+                  ? const CircularProgressIndicator()
+                  :
+                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                       ),
                       onPressed: () {
-                        if (_formkey.currentState!.validate()) {}
+                        if (_formkey.currentState!.validate()) {
+                          authProvider.login(email.text, password.text).then((response){
+
+                            if(response['status'] == 500){
+                              HttpService().showMessage(response['message'], context);
+                            }else{
+                              User user = User(name: response['data'].name, token: response['data'].token);
+
+                              userProvider.setUser(user);
+
+                               Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  SearchScreen(user: user)));
+
+
+                            }
+
+                          });
+                        }
                       },
                       child: const Text(
-                        "Create Account",
+                        "Sign In",
                         style: TextStyle(fontFamily: "Lato", fontSize: 15),
                       )),
                 ),

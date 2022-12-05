@@ -9,10 +9,13 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../model/user.dart';
+import '../preference/user_preference.dart';
 import '../provider/user_provider.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final User user;
+  const SearchScreen({super.key, required this.user});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -30,8 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-  
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -42,9 +44,10 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Image(image: AssetImage('assets/images/logo.png')),
         ),
         leadingWidth: 50,
-        title:  Text(
-          userProvider.user.toUpperCase(),
-          style: TextStyle(color: Colors.black, fontFamily: "Lato"),
+        title:  
+        Text(
+         widget.user.name.toUpperCase(),
+          style: const TextStyle(color: Colors.black, fontFamily: "Lato"),
         ),
         centerTitle: false,
         actions: [

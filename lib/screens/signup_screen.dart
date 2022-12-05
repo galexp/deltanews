@@ -1,4 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:deltanews/model/user.dart';
 import 'package:deltanews/provider/auth_provider.dart';
 import 'package:deltanews/provider/user_provider.dart';
 import 'package:deltanews/screens/signin_screen.dart';
@@ -303,9 +304,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if(response['status'] == 500){
                             HttpService().showMessage(response['message'], context);
                           }else{
-                            print(response['data']);
-                            String name = response['data'].name;
-                            userProvider.setUser(name);
+                            // print(response['data']);
+                            // String name = response['data'].name;
+                            User user = User(name: response['data'].name, token: response['data'].token);
+                            userProvider.setUser(user);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

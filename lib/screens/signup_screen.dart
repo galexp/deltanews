@@ -1,8 +1,12 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:deltanews/provider/auth_provider.dart';
+import 'package:deltanews/provider/user_provider.dart';
 import 'package:deltanews/screens/signin_screen.dart';
 import 'package:deltanews/screens/success_screen.dart';
+import 'package:deltanews/util/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -17,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool? _value = false;
 
+  final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
@@ -24,6 +29,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -58,6 +65,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: TextStyle(fontFamily: 'Lato', fontSize: 30),
                   ),
                 ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  child: RichText(
+                      textAlign: TextAlign.left,
+                      text: const TextSpan(children: <TextSpan>[
+                        TextSpan(
+                            text: 'Name ',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Lato',
+                                fontSize: 15)),
+                        TextSpan(
+                            text: '*',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontFamily: 'Lato',
+                                fontSize: 15))
+                      ])),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: TextFormField(
+                    controller: name,
+                    decoration: const InputDecoration(
+                        hintText: "Name",
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 246, 245, 245),
+                        enabledBorder: InputBorder.none),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty
+                         ) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                
                 Container(
                   alignment: Alignment.bottomLeft,
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -240,16 +287,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     )),
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  child: ElevatedButton(
+                  child: authProvider.registeredInStatus == Status.Registering
+                  ? const CircularProgressIndicator()
+                  :
+                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                       ),
                       onPressed: () {
                         if (_formkey.currentState!.validate()) {
-                          Navigator.push(
+
+                          
+                        authProvider.register(name.text, email.text, password.text).then((response) {
+                          
+                          if(response['status'] == 500){
+                            HttpService().showMessage(response['message'], context);
+                          }else{
+                            print(response['data']);
+                            String name = response['data'].name;
+                            userProvider.setUser(name);
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const SuccessScreen()));
+                          }
+
+                         
+                          
+                        });
+                        
+                          
                         }
                       },
                       child: const Text(

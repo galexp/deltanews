@@ -1,4 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:deltanews/preference/user_preference.dart';
+import 'package:deltanews/screens/signin_screen.dart';
+import 'package:deltanews/util/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -17,11 +20,13 @@ class _AccountWidgetState extends State<AccountWidget> {
 
   //we can upload image from camera or from gallery based on parameter
   Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-
+   var img = await picker.pickImage(source: media);
+   
+    
     setState(() {
       image = img;
     });
+    // print(img!.path);
   }
 
   //show popup dialog
@@ -110,7 +115,7 @@ class _AccountWidgetState extends State<AccountWidget> {
                             children: <Widget>[
                               ListTile(
                                 leading: const Icon(Icons.photo),
-                                title: const Text('Galery'),
+                                title: const Text('Gallery'),
                                 onTap: () {
                                   Navigator.pop(context);
                                   getImage(ImageSource.gallery);
@@ -135,13 +140,35 @@ class _AccountWidgetState extends State<AccountWidget> {
                         border: Border.all(color: Colors.blue, width: 3),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(80)),
-                        image: const DecorationImage(
-                            image: AssetImage('assets/images/placeholder.png'),
-                            fit: BoxFit.fitHeight)),
+                        
+                            ),
+                        child: 
+                        image != null ? 
+                        Image.file(File(image!.path))
+                        :  const Image(image: AssetImage('assets/images/placeholder.png')) ,
                   ),
                 ),
               ],
             ),
+          ),
+
+          Container(
+                  height: 70,
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  child: 
+                ElevatedButton(  
+                  onPressed: (() {
+                    UserPreference().removeUser();
+                    HttpService().showMessage("Log Out successfully!", context);
+                    Navigator.push(context, MaterialPageRoute(builder: 
+                    (context) => const SignInScreen()));
+                  }), 
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50)
+                  ),
+                  child: const Text("Log Out")),
+                
+           
           ),
         ],
       ),

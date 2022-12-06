@@ -42,9 +42,10 @@ class MyApp extends StatelessWidget {
             return const CircularProgressIndicator();
             
           default:
+            // print(snapshot.data);
             if(snapshot.hasError){
               return Text('Error: ${snapshot.error}' );
-            }else if(snapshot.data!.token == null){
+            }else if(snapshot.data!.token == "null"){
                return EasySplashScreen(
                   logoWidth: 60,
                   loaderColor: const Color.fromARGB(255, 17, 138, 229),
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
               // userProvider.setUser(user);
               return  SearchScreen(user: user);
             }
+            // return Text("");
         }
         }
     ),

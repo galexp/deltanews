@@ -15,7 +15,10 @@ enum Status {
   NotRegistered,
   Registering,
   notLoggedIn,
-  loggedIn
+  loggedIn,
+  notLoading,
+  isLoading,
+  loaded
 }
 
 class AuthProvider with ChangeNotifier{

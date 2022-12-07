@@ -8,6 +8,8 @@ class HttpService{
 
   static const String login = "${base_url}login";
 
+  static const String blog = "${base_url}blogs";
+
   void showMessage(String message, BuildContext context){
     var snackBar = SnackBar(
       content: Text(message),

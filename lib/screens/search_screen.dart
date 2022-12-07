@@ -12,6 +12,7 @@ import 'package:unicons/unicons.dart';
 import '../model/user.dart';
 import '../preference/user_preference.dart';
 import '../provider/user_provider.dart';
+import '../widgets/add_post_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   final User user;
@@ -33,7 +34,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -44,9 +44,8 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Image(image: AssetImage('assets/images/logo.png')),
         ),
         leadingWidth: 50,
-        title:  
-        Text(
-         widget.user.name.toUpperCase(),
+        title: Text(
+          widget.user.name.toUpperCase(),
           style: const TextStyle(color: Colors.black, fontFamily: "Lato"),
         ),
         centerTitle: false,
@@ -101,6 +100,13 @@ class _SearchScreenState extends State<SearchScreen> {
             selectedIndex = value;
           });
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddPostScreen()));
+        },
+        child: const Icon(BootstrapIcons.plus),
       ),
     );
   }

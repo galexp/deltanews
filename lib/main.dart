@@ -1,5 +1,6 @@
 import 'package:deltanews/preference/user_preference.dart';
 import 'package:deltanews/provider/auth_provider.dart';
+import 'package:deltanews/provider/blog_provider.dart';
 // import 'package:deltanews/provider/user_provider.dart';
 import 'package:deltanews/screens/onboarding_screen.dart';
 import 'package:deltanews/screens/search_screen.dart';
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider())
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => BlogProvider())
       ],
       child:  MaterialApp(
     debugShowCheckedModeBanner: false,
